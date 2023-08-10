@@ -1,0 +1,92 @@
+name: ci-dev-ops
+
+defaults:
+  run:
+    working-directory: .
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main*"
+      - "dev/**"
+    paths:
+      - "packages/ops/**"
+      - "packages/contracts/**"
+      - "packages/api/**"
+      - ".github/workflows/ci-dev-ops.yml"
+
+jobs:
+  ops-int-test:
+    runs-on: ubuntu-latest
+    environment: local
+
+    steps:
+      - name: Checkout bangloan-defi
+        uses: actions/checkout@v4
+
+      - name: Install yarn
+        run: |
+          corepack prepare yarn@stable --activate
+          npm install -g yarn
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install foundry-toolchain
+        uses: foundry-rs/foundry-toolchain@v1.2.0
+        with:
+          # using 2024-10-19 Nightly https://github.com/foundry-rs/foundry/tree/nightly-a8c3e9c1376122e7030dbe5c695b2f1f2a6f389b
+          # latest gives "deserialization error: duplicate field `status` at line 1 column 1085"
+          # see failure: https://github.com/bangloan/bangloan-defi/actions/runs/11576938626/job/32227114227
+          version: nightly-a8c3e9c1376122e7030dbe5c695b2f1f2a6f389b
+
+
+      - name: Install Project Dependencies
+        run: yarn install
+
+      - name: Setup Local Environment
+        run: find . -type f -name ".env*.sample" -exec sh -c 'F={}; cp -nv $F $(dirname $F)/$(basename $F .sample)' \;
+
+      - name: Build Project
+        run: yarn build
+
+      - name: Setup Supabase CLI
+        uses: supabase/setup-cli@v1.3.0
+        with:
+          version: latest
+
+      - name: Start Supabase
+        run: supabase start
+        working-directory: packages/api
+
+      - name: Run Docker Compose with Background Services
+        run: docker compose --env-file packages/api/.env up --detach --build --wait
+
+      - name: Deploy Bangloan Contracts
+        run: yarn deploy
+        working-directory: packages/contracts
+
+      - name: Create Default Users
+        run: yarn op --create-default-users
+        working-directory: packages/ops
+
+      - name: Run Ops Integration Tests
+        run: yarn int-test
+        working-directory: packages/ops
+
+      - name: See API Logs, If Tests Failed
+        run: docker logs api
+        if: ${{ failure() }}
+
+      - name: Shutdown Docker Compose detached
+        run: docker compose --env-file packages/api/.env down
+        if: ${{ always() }}
+
+      - name: Stop Supabase
+        run: supabase stop --no-backup
+        working-directory: packages/api
+        if: ${{ always() }}

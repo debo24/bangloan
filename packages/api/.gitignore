@@ -1,0 +1,7 @@
+# compiled output
+/dist
+
+coverage
+
+# Sentry Config File
+.sentryclirc

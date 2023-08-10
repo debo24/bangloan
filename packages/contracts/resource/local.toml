@@ -1,0 +1,47 @@
+##
+# The Application Configuration for the Local Environment (local development).
+##
+
+[evm]
+# blockchain id
+chain_id = 31337
+deploy_mocks = true
+
+[evm.address]
+# Dev/Anvil Wallet, Account[0]
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[1]
+operator = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[2]
+custodian = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[3]
+upgrader = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[6]
+asset_manager = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+
+[evm.contracts.liquid_continuous_multi_token_vault]
+# rate in basis points, e.g.  10% = 1000 bps
+full_rate_bps = 10_00
+# rate in basis points, e.g.  5.5% = 550 bps
+reduced_rate_bps = 5_50
+# January 1, 2024 2:00:00 PM UTC = 1704117600
+vault_start_timestamp = 1704117600
+
+[evm.contracts.upside_vault]
+# 2 decimal place percentage (meaining value divided by 100) as integer.
+collateral_percentage = 20_00
+
+[evm.contracts.cbl]
+# CBL token params
+# Dev/Anvil Wallet, Account[0]
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[1]
+minter = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+
+max_supply = 10_000_000 # 10 million in wei
+
+[services.supabase]
+url = "http://127.0.0.1:54321"
+
+# Save the contract deployment details to the database.
+update_contract_addresses = true

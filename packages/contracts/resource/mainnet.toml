@@ -1,0 +1,37 @@
+##
+# The Application Configuration for the TestNet Environment.
+##
+
+[evm]
+# blockchain id, e.g. arbitrumOne=42161
+chain_id = 42161
+deploy_mocks = false
+
+[evm.address]
+# PrimeVault wallets available ONLY on specific EVM chains, e.g.:  Ethereum, Arbitrum, Optimism, Polygon
+# primevault Wallet [0xFa..0519] "Bangloan Eng - Owner Role v1.0"
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# primevault Wallet [0x5F..bBf1] "Bangloan Eng - Operator Role v1.0"
+operator = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# primevault Wallet [0x1E..81b1] "Bangloan Eng - Upgrader Role v1.0"
+upgrader = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# primevault Wallet [0x1D..7BFB] "Bangloan Eng - Asset Manager Role v1.0"
+asset_manager = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# primevault Wallet [0xce..3FB2] "Bangloan DeFi Vault - Treasury v1.0"
+custodian = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+
+[evm.contracts.liquid_continuous_multi_token_vault]
+# rate in basis points, e.g.  10% = 1000 bps
+full_rate_bps = 10_00
+# rate in basis points, e.g.  5.5% = 550 bps
+reduced_rate_bps = 5_50
+
+[evm.contracts.upside_vault]
+# upside rate in basis points, e.g. 2% = 200 bps
+collateral_percentage = 200
+
+[services.supabase]
+url = ""
+
+# Save the contract deployment details to the database.
+update_contract_addresses = false

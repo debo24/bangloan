@@ -1,0 +1,80 @@
+name: ci-dev-app
+env:
+  VERCEL_ORG_ID: ${{ vars.VERCEL_BANGLOAN_TEAM_ID }}
+  VERCEL_PROJECT_ID: ${{ vars.VERCEL_BANGLOAN_DEFI_PROJECT_ID }}
+
+defaults:
+  run:
+    working-directory: packages/app
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main*"
+      - "dev/**"
+    paths:
+      - "packages/app/**"
+      - "packages/contracts/**"
+      - ".github/workflows/ci-dev-app.yml"
+
+jobs:
+  app-build-deploy:
+    runs-on: ubuntu-latest
+    environment: Preview
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yarn
+        run: |
+          corepack prepare yarn@stable --activate
+          npm install -g yarn
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install Project dependencies
+        run: yarn install
+        working-directory: .
+
+      - name: Run app Tests
+        run: yarn run test
+        env:
+          API_BASE_URL: http://localhost:3001
+          APP_BASE_URL: http://localhost:3000
+          NEXT_PUBLIC_SUPABASE_URL: testing_anything_will_do
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: testing_anything_will_do
+          NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: testing_anything_will_do
+          SUPABASE_SERVICE_ROLE_KEY: testing_anything_will_do
+
+      - name: Install Vercel CLI
+        run: npm install --global vercel@latest
+
+      - name: Pull Vercel Environment Information
+        run: vercel pull --yes --environment=preview --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }}
+
+        # NOTE (JL,2024-07-09): We create a `.env.local` file on the fly, to get the server-side Env Variables past
+        #   the `vercel build` invocation.
+      - name: Build Project Artifacts
+        run: |
+          cat >.env.local <<EOS
+          API_BASE_URL: http://localhost:3001
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+          EOS
+          vercel build --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }}
+        env:
+          NEXT_PUBLIC_SUPABASE_URL: ${{ vars.TEST_SUPABASE_URL }}
+          NEXT_PUBLIC_SUPABASE_ANON_KEY: ${{ vars.TEST_SUPABASE_ANON_KEY }}
+          NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID: ${{ vars.NEXT_PUBLIC_WALLET_CONNECT_PROJECT_ID }}
+
+      - name: Deploy Project Artifacts to Vercel
+        run: vercel deploy --prebuilt --cwd ../.. --token=${{ secrets.VERCEL_TOKEN }}

@@ -1,0 +1,28 @@
+{
+  "$schema": "https://turbo.build/schema.json",
+  "tasks": {
+    "clean": {
+      "dependsOn": ["^clean"],
+      "cache": false
+    },
+    "build": {
+      "dependsOn": ["^build"],
+      "outputs": ["dist/**", ".next/**", "!.next/cache/**", "types/**", "out/**"]
+    },
+    "build:ci": {
+      "dependsOn": ["^build:ci"],
+      "outputs": ["dist/**"]
+    },
+    "app#build:ci": {
+      "dependsOn": ["^build:ci"],
+      "outputs": [".next/**", "!.next/cache/**"]
+    },
+    "test": {},
+    "int-test": {},
+    "format": {},
+    "lint": {},
+    "dev": {
+      "cache": false
+    }
+  }
+}

@@ -1,0 +1,27 @@
+name: api-with-anvil
+
+services:
+  anvil:
+    container_name: anvil
+    image: anvil
+    network_mode: "host"
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile-anvil
+
+  api:
+    container_name: api
+    image: api
+    network_mode: "host"
+    platform: linux/amd64
+    build:
+      context: .
+      dockerfile: Dockerfile-api
+    environment:
+      OPERATOR_PRIVATE_KEY: ${OPERATOR_PRIVATE_KEY}
+      CUSTODIAN_PRIVATE_KEY: ${CUSTODIAN_PRIVATE_KEY}
+      SUPABASE_SERVICE_ROLE_KEY: ${SUPABASE_SERVICE_ROLE_KEY}
+      SUPABASE_JWT_SECRET: ${SUPABASE_JWT_SECRET}
+      CRON_SECRET: ${CRON_SECRET}
+      SLACK_TOKEN: ${SLACK_TOKEN}

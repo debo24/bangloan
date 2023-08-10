@@ -1,0 +1,85 @@
+name: ci-dev-api
+
+defaults:
+  run:
+    working-directory: packages/api
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main*"
+      - "dev/**"
+    paths:
+      - "packages/api/**"
+      - "packages/contracts/**"
+      - ".github/workflows/ci-dev-api.yml"
+
+jobs:
+  # TODO - separate out build and deploy steps.  see https://github.com/actions/upload-artifact
+  api-build-deploy:
+    runs-on: ubuntu-latest
+    environment: testnet
+
+    steps:
+      - uses: actions/checkout@v4
+
+      - name: Install yarn
+        run: |
+          corepack prepare yarn@stable --activate
+          npm install -g yarn
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Run Tests
+        run: yarn run test
+        env:
+          ENVIRONMENT: "local"
+          # Dev/Anvil Wallet, PrivateKey[1] - okay to share
+          OPERATOR_PRIVATE_KEY: anything-testing-only
+          SUPABASE_SERVICE_ROLE_KEY: anything-testing-only
+          SUPABASE_JWT_SECRET: anything-testing-only
+          CRON_SECRET : anything-testing-only
+          SLACK_TOKEN: anything-testing-only
+
+      - name: Build API
+        run: yarn build && yarn run sentry:sourcemaps
+        env:
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}
+
+       # docker build --platform needs to match the fly.io instances.  currently linux/amd64.
+      - name: Build Docker image
+        run: docker build --platform linux/amd64 -f Dockerfile -t bangloan-defi-api ../..
+
+      - name: List docker images
+        run: docker images
+
+      - name: Set up Fly.io
+        uses: superfly/flyctl-actions/setup-flyctl@master
+        with:
+          version: v0.2.69
+
+      - name: Deploy fly.io bangloan-defi app
+        run: flyctl deploy ../.. --app bangloan-defi-api --env ENVIRONMENT=testnet --local-only -t ${{ secrets.FLY_DEPLOY_TOKEN }}
+
+      - name: Deploy fly.io bangloan-defi-ci app
+        run: flyctl deploy ../.. --app bangloan-defi-api-ci --env ENVIRONMENT=ci --local-only -t ${{ secrets.CI_FLY_DEPLOY_TOKEN }}
+
+      - name: Create Sentry release
+        uses: getsentry/action-release@v1
+        env:
+          SENTRY_ORG: bangloan
+          SENTRY_PROJECT: bangloan-defi-api
+          SENTRY_AUTH_TOKEN: ${{ secrets.SENTRY_AUTH_TOKEN }}

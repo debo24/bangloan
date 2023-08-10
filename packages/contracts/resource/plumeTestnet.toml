@@ -1,0 +1,60 @@
+##
+# The Application Configuration for the TestNet Environment.
+##
+
+[evm]
+# blockchain id, e.g. plumeTestnet=98864, plumeTestnet_old=161221135, plumeDevnet=18230
+chain_id = 98864
+deploy_mocks = false
+
+[evm.address]
+# bangloan-devops wallets.  wallet numbers are 1-based (as opposed to 0-based in anvil)
+# devops admin/owner (wallet 1) - public address, okay to share
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops operator (wallet 2) - public address, okay to share
+operator = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops custodian (wallet 3) - public address, okay to share
+custodian = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops upgrader (wallet 4) - public address, okay to share
+upgrader = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops asset manager (wallet 7) - public address, okay to share
+asset_manager = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# CBL token address - Plume Testnet
+cbl_token="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# USDC.e token address - Plume Testnet
+usdc_token="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Liquid Continuous Multi Token Vault Proxy - Plume Testnet
+liquid_vault_proxy="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Liquid Continuous Multi Token Vault Impl - Plume Testnet (v2 - latest)
+liquid_vault_impl="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Liquid Continuous Multi Token Vault Impl - Plume Testnet (v1)
+liquid_vault_impl_V1="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+
+
+[evm.contracts.liquid_continuous_multi_token_vault]
+# rate in basis points, e.g.  10% = 1000 bps
+full_rate_bps = 10_00
+# rate in basis points, e.g.  5.5% = 550 bps
+reduced_rate_bps = 5_50
+# January 1, 2024 2:00:00 PM UTC = 1704117600
+vault_start_timestamp = 1704117600
+
+
+[evm.contracts.upside_vault]
+# 2 decimal place percentage (meaining value divided by 100) as integer.
+collateral_percentage = 200
+
+[evm.contracts.cbl]
+# CBL token params
+# devops admin/owner (wallet 1) - public address, okay to share
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops operator (wallet 2) - public address, okay to share
+minter = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# CBL token params
+max_supply = 10_000_000 # 10 million in wei
+
+[services.supabase]
+url = ""
+
+# Save the contract deployment details to the database.
+update_contract_addresses = false

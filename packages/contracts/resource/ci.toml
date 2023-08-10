@@ -1,0 +1,46 @@
+##
+# The Application Configuration for the TestNet Environment.
+##
+
+[evm]
+# blockchain id, e.g. baseSepolia=84532, arbSepolia=421614
+chain_id = 84532
+deploy_mocks = true
+
+[evm.address]
+# bangloan-devops wallets.  wallet numbers are 1-based (as opposed to 0-based in anvil)
+# devops admin/owner (wallet 1) - public address, okay to share
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops operator (wallet 2) - public address, okay to share
+operator = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops custodian (wallet 3) - public address, okay to share
+custodian = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops upgrader (wallet 4) - public address, okay to share
+upgrader = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops upgrader (wallet 7) - public address, okay to share
+asset_manager = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+
+[evm.contracts.liquid_continuous_multi_token_vault]
+# rate in basis points, e.g.  10% = 1000 bps
+full_rate_bps = 10_00
+# rate in basis points, e.g.  5.5% = 550 bps
+reduced_rate_bps = 5_50
+
+[evm.contracts.upside_vault]
+# 2 decimal place percentage (meaining value divided by 100) as integer.
+collateral_percentage = 200
+
+[evm.contracts.cbl]
+# CBL token params
+# devops admin/owner (wallet 1) - public address, okay to share
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# devops operator (wallet 2) - public address, okay to share
+minter = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# CBL token params
+max_supply = 10_000_000 # 10 million in wei
+
+[services.supabase]
+url = "https://iucsqvvjujqcncowypnr.supabase.co"
+
+# Save the contract deployment details to the database.
+update_contract_addresses = true

@@ -1,0 +1,45 @@
+{
+  "name": "@bangloan/contracts",
+  "private": true,
+  "main": "index.js",
+  "types": "index.ts",
+  "scripts": {
+    "rm-dbdata": "rm -f ./script/output/dbdata.json",
+    "chain": "yarn rm-dbdata && anvil --config-out localhost.json",
+    "clean": "forge clean && rm -rf broadcast cache deployments types localhost.json index.js",
+    "dev": "yarn rm-dbdata && anvil --config-out localhost.json & make deploy-local",
+    "build": "forge build && yarn gen-types",
+    "test": "forge test",
+    "coverage": "forge coverage --report lcov && genhtml lcov.info --branch-coverage -o out/test-reports/coverage --ignore-errors inconsistent",
+    "format": "forge fmt && prettier './script/**/*.js' --write",
+    "lint": "forge fmt && eslint --fix --ignore-path .gitignore && yarn solhint './*(test|src)/**/*.sol'",
+    "db-check": "tsc && node ./script/utils/checkDb.js",
+    "db-export": "tsc && node ./script/utils/exporter.js",
+    "deploy": "make deploy-local",
+    "deploy:ci": "yarn db-export && make deploy-baseSepolia",
+    "gen-abis": "node script/utils/generateTsAbis.js",
+    "gen-types": "yarn typechain --target ethers-v5 --out-dir ./types ./out/*.sol/*.json && tsc",
+    "postinstall": "yarn build && yarn gen-types"
+  },
+  "packageManager": "yarn@3.2.3",
+  "devDependencies": {
+    "@typechain/ethers-v5": "^11.1.2",
+    "@types/eslint": "^8",
+    "@types/node": "^20.11.0",
+    "eslint": "^8.56.0",
+    "eslint-config-prettier": "^9.1.0",
+    "eslint-plugin-prettier": "^5.1.3",
+    "prettier": "^3.2.2",
+    "solhint": "^5.0.3",
+    "typechain": "^8.3.2",
+    "typescript": "^5.4.5"
+  },
+  "dependencies": {
+    "@ethersproject/abi": "^5.7.0",
+    "@ethersproject/providers": "^5.7.2",
+    "@supabase/supabase-js": "^2.39.3",
+    "dotenv": "^16.4.5",
+    "ethers": "^5.7.2",
+    "js-toml": "^1.0.0"
+  }
+}

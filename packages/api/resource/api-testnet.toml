@@ -1,0 +1,24 @@
+##
+# The Application Configuration for the TestNet Environment.
+##
+
+node_env = "testnet"
+
+[api]
+port = 3001
+version = "0.0.1"
+
+[services.sync_vaults]
+block_history = 1000
+
+[services.supabase]
+url = "https://kyvvhlnmoqibdihqrlmc.supabase.co"
+
+[services.ethers]
+# settings for baseSepolia, see others: https://chainlist.org/
+url = "https://sepolia.base.org"
+wss = "https://sepolia.base.org"
+
+[evm.address]
+# devops operator (wallet 2) - public address, okay to share
+operator = "0x123...."

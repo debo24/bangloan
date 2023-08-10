@@ -1,0 +1,25 @@
+# syntax = docker/dockerfile:1
+
+# Adjust NODE_VERSION as desired
+ARG NODE_VERSION=20.15.0
+
+FROM node:${NODE_VERSION}-slim AS base
+
+LABEL fly_launch_runtime="NestJS"
+
+# NestJS app lives here
+WORKDIR /app
+
+# Set production environment
+ENV NODE_ENV="production"
+ENV APP_PORT=3001
+
+# Copy already-built application.
+COPY packages/contracts /app/contracts
+COPY packages/api /app/api
+COPY yarn.lock /app
+
+WORKDIR /app/api
+EXPOSE 3001
+
+CMD [ "node", "dist/src/main" ]

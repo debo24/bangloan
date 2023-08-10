@@ -1,0 +1,29 @@
+{
+  "name": "@bangloan/repo",
+  "version": "0.0.1",
+  "private": true,
+  "workspaces": {
+    "packages": [
+      "packages/*"
+    ]
+  },
+  "scripts": {
+    "clean": "turbo run clean",
+    "build": "turbo run build",
+    "test": "turbo run test",
+    "int-test": "turbo run int-test",
+    "format": "turbo run format",
+    "lint": "turbo run lint",
+    "postinstall": "husky install"
+  },
+  "devDependencies": {
+    "@types/winston": "^2.4.4",
+    "husky": "^9.0.11",
+    "lint-staged": "^15.2.7",
+    "turbo": "^2.0.6"
+  },
+  "packageManager": "yarn@3.2.3",
+  "resolutions": {
+    "ws": "^8.17.1"
+  }
+}

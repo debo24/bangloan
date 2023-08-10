@@ -1,0 +1,95 @@
+name: ci-dev-contracts
+
+defaults:
+  run:
+    working-directory: packages/contracts
+
+on:
+  workflow_dispatch:
+  push:
+    branches:
+      - "main*"
+      - "dev/**"
+    paths:
+      - "packages/contracts/**"
+      - ".github/workflows/ci-dev-contracts.yml"
+
+jobs:
+  contracts-test:
+    runs-on: ubuntu-latest
+    environment: local
+
+    steps:
+      - uses: actions/checkout@v4
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      - name: Run tests
+        run: forge test -vvv
+        env:
+          ENVIRONMENT: local
+
+      - name: Run coverage report
+        run: forge coverage
+        env:
+          ENVIRONMENT: local
+
+  contracts-deploy-testnet:
+    runs-on: ubuntu-latest
+    needs: contracts-test
+    environment: testnet
+
+    steps:
+      - uses: actions/checkout@v3
+        with:
+          submodules: recursive
+
+      - name: Install Foundry
+        uses: foundry-rs/foundry-toolchain@v1
+        with:
+          version: nightly
+
+      # re-run the tests here on purpose to ensure quality.
+      - name: Run tests
+        run: forge test -vvv
+        env:
+          ENVIRONMENT: local
+
+      - name: Install yarn
+        run: |
+          corepack prepare yarn@stable --activate
+          npm install -g yarn
+
+      - name: Install Node
+        uses: actions/setup-node@v4
+        with:
+          node-version: 20
+          cache: "yarn"
+
+      - name: Install dependencies
+        run: yarn install
+
+      - name: Deploy LiquidMultiTokenVault
+        run: yarn deploy:ci
+        env:
+          ENVIRONMENT: "testnet"
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.BASE_SEPOLIA_DEPLOYER_PRIVATE_KEY }}
+          ALCHEMY_API_KEY: ${{ secrets.TESTNET_ALCHEMY_API_KEY }}
+          BASE_SEPOLIA_ETHERSCAN_API_KEY: ${{ secrets.BASE_SEPOLIA_ETHERSCAN_API_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ""  # don't update supabase here
+          DEPLOY_SCRIPT: "script/DeployLiquidMultiTokenVault.s.sol:DeployLiquidMultiTokenVault"
+
+      - name: Deploy contracts and export to Test supabase
+        run: yarn deploy:ci
+        env:
+          ENVIRONMENT: "testnet"
+          DEPLOYER_PRIVATE_KEY: ${{ secrets.BASE_SEPOLIA_DEPLOYER_PRIVATE_KEY }}
+          ALCHEMY_API_KEY: ${{ secrets.TESTNET_ALCHEMY_API_KEY }}
+          BASE_SEPOLIA_ETHERSCAN_API_KEY: ${{ secrets.BASE_SEPOLIA_ETHERSCAN_API_KEY }}
+          SUPABASE_SERVICE_ROLE_KEY: ${{ secrets.TEST_SUPABASE_SERVICE_ROLE_KEY }}
+

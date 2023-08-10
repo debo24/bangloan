@@ -1,0 +1,43 @@
+##
+# The Application Configuration for the Plume Mainnet Environment.
+##
+
+[evm]
+# blockchain id, e.g. plumeMainnet=98865, plumeTestnet=98864, plumeTestnet_old=161221135, plumeDevnet=18230
+chain_id = 98865
+deploy_mocks = false
+
+
+[evm.address]
+# bangloan.cb.id admin/owner (#1)
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# bangloanoper.cb.id operator (#2)
+operator = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# bangloanupgrader.cb.id upgrader (#4)
+upgrader = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# bangloanassetmgr.cb.id asset manager (#7)
+asset_manager = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+
+# USDC.e token address - Bridged USDC (Stargate) (USDC.e)
+usdc_token="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Liquid Continuous Multi Token Vault Proxy - Plume Mainnet
+liquid_vault_proxy="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Liquid Continuous Multi Token Vault Impl - Plume Mainnet (v2 - latest)
+liquid_vault_impl="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Liquid Continuous Multi Token Vault Impl - Plume Mainnet (v1)
+liquid_vault_impl_V1="0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+
+
+[evm.contracts.liquid_continuous_multi_token_vault]
+# rate in basis points, e.g.  10% = 1000 bps
+full_rate_bps = 10_00
+# rate in basis points, e.g.  5.5% = 550 bps
+reduced_rate_bps = 5_50
+# December 4, 2024 2:00:00 PM UTC = 1733277600
+vault_start_timestamp = 1733277600
+
+[services.supabase]
+url = ""
+
+# Save the contract deployment details to the database.
+update_contract_addresses = false

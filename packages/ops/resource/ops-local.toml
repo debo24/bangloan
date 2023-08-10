@@ -1,0 +1,36 @@
+node_env = "development"
+
+[api]
+url = "http://127.0.0.1:3001"
+
+[app]
+url = "http://127.0.0.1:3000"
+
+[services.supabase]
+url = "http://127.0.0.1:54321"
+
+[services.ethers]
+url = "http://127.0.0.1:8545"
+
+[evm.address]
+# Dev/Anvil Wallet, Account[0]
+owner = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[1]
+operator = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[2]
+custodian = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[3]
+treasury = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+# Dev/Anvil Wallet, Account[4]
+activity_reward = "0xC54f8862C4bB1c114d5b6C666410eb242a6c97Db"
+
+[users]
+# Associated with Dev/Anvil Wallet, Account[0]
+admin.email_address = "test+admin@bangloan.io"
+# Associated with Dev/Anvil Wallet, Account[7]
+alice.email_address = "test+alice@bangloan.io"
+# Associated with Dev/Anvil Wallet, Account[8]
+bob.email_address = "test+bob@bangloan.io"
+
+[operation.createVault]
+collateral_percentage = 300

@@ -10,11 +10,6 @@
   "scripts": {
     "clean": "turbo run clean",
     "build": "turbo run build",
-    "test": "turbo run test",
-    "int-test": "turbo run int-test",
-    "format": "turbo run format",
-    "lint": "turbo run lint",
-    "postinstall": "husky install"
   },
   "devDependencies": {
     "@types/winston": "^2.4.4",
